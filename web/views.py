@@ -5,9 +5,21 @@ from .models import Categoria, Producto
 
 """vistas para el catalogo de productos"""
 def index(request):
+    listaCategorias = Categoria.objects.all()
     listaProductos = Producto.objects.all()
     context = {
-        'productos':listaProductos
+        'productos':listaProductos,
+        'categorias':listaCategorias
     }
 
+    return render(request,'index.html', context)
+
+def productosPorCategoria(request, categoria_id):
+    objCategoria = Categoria.objects.get(pk=categoria_id)
+    listaProductos = objCategoria.producto_set.all()
+    listaCategorias = Categoria.objects.all()
+    context = {
+        'productos':listaProductos,
+        'categorias':listaCategorias}
+    
     return render(request,'index.html', context)
