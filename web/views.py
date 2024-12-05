@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 
 from .models import Categoria, Producto
+from .carrito import Cart
 # Create your views here.
 
 """vistas para el catalogo de productos"""
@@ -46,3 +47,17 @@ def detalleProducto(request, producto_id):
     }
     
     return render(request, 'producto.html', context)
+
+def carrito(request):
+    return render(request, 'carrito.html')
+
+def agregarCarrito(request, producto_id):
+    cantidad = 1
+
+    objProducto = Producto.objects.get(pk=producto_id)
+    carritoProducto = Cart(request)
+    carritoProducto.add(objProducto, cantidad)
+
+    print(request.session.get("cart"))
+
+    return render(request, 'carrito.html')
