@@ -1,7 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import Categoria, Producto
+from .models import Categoria, Producto, Cliente
 from .carrito import Cart
+
+from django.contrib.auth.models import User
+from django.contrib.auth import login, logout, authenticate
+from .forms import ClienteForm
 # Create your views here.
 
 """vistas para el catalogo de productos"""
@@ -76,3 +80,53 @@ def limpiarCarrito (request):
     carritoProducto = Cart(request)
     carritoProducto.clear()
     return render(request,'carrito.html')
+
+def crearUsuario(request):
+    if request.method == 'POST':
+        dataUsuario = request.POST['nuevoUsuario']
+        dataPassword = request.POST['nuevoPassword']
+        nuevoUsuario = User.objects.create_user(username=dataUsuario, password=dataPassword)
+        if nuevoUsuario is not None:
+            login(request,nuevoUsuario)
+            return redirect('/cuenta')
+
+    return render(request, 'login.html')
+
+def cuentaUsuario(request):
+    frmCliente = ClienteForm()
+    context = {
+        'frmCliente' : frmCliente
+    }
+    return render(request,'cuenta.html', context)
+
+def actualizarCliente(request):
+    mensaje = ""
+
+    if request.method == 'POST':
+        frmCliente = ClienteForm(request.POST)
+        if frmCliente.is_valid():
+            dataCliente = frmCliente.cleaned_data
+
+            #actualizar usuario
+            actUsuario = User.objects.get(pk=request.user.id)
+            actUsuario.first_name = dataCliente["nombres"]
+            actUsuario.last_name = dataCliente ["apellidos"]
+            actUsuario.email = dataCliente ["email"]
+            actUsuario.save()
+
+            #registro cliente
+            nuevoCliente = Cliente()
+            nuevoCliente.usuario = actUsuario
+            nuevoCliente.dni = dataCliente["dni"]
+            nuevoCliente.direccion = dataCliente["direccion"]
+            nuevoCliente.telefono = dataCliente["telefono"]  
+            nuevoCliente.sexo = dataCliente["sexo"]
+            nuevoCliente.fecha_nacimiento = dataCliente["fecha_nacimiento"]
+            nuevoCliente.save()
+            mensaje = "Datos Actualizados"
+
+    context = {
+        'mensaje':mensaje,
+        'frmCliente':frmCliente
+    }
+    return render(request, 'cuenta.html', context)

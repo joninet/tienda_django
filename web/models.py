@@ -36,8 +36,17 @@ class Pedido(models.Model):
         ('0', 'Pendiente'),
         ('1', 'Pagado')
     )
-    cliente= models.OnetoManyField(Cliente,on_delete=RESTRICT)
-    fecha_registro = models.DateTimeField(auto)
-    nro_pedido =
-    monto_total =
-    estado =
+    cliente= models.ForeignKey(Cliente,on_delete=models.RESTRICT)
+    fecha_registro = models.DateTimeField(auto_now=True)
+    nro_pedido = models.CharField(max_length=20)
+    monto_total = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    estado = models.CharField(max_length=1, default='0', choices=estado_choices)
+
+    def __str__(self):
+        return self.nro_pedido
+
+class pedidoDetalle(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.RESTRICT)
+    producto = models.ForeignKey(Producto, on_delete=models.RESTRICT)
+    cantidad = models.IntegerField(default='1')
+    subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0 )
