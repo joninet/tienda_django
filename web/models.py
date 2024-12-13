@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Categoria(models.Model):
@@ -18,3 +19,25 @@ class Producto(models.Model):
     
     def __str__(self):
         return self.nombre
+    
+class Cliente(models.Model):
+    usuario = models.OneToOneField(User,on_delete=models.RESTRICT)
+    dni = models.CharField(max_length=8)
+    sexo = models.CharField(max_length=1, default="M")
+    telefono = models.CharField(max_length=20)
+    fecha_nacimiento = models.DateField(null=True)
+    direccion = models.TextField()
+
+    def __str__(self):
+        return self.dni
+    
+class Pedido(models.Model):
+    estado_choices = (
+        ('0', 'Pendiente'),
+        ('1', 'Pagado')
+    )
+    cliente= models.OnetoManyField(Cliente,on_delete=RESTRICT)
+    fecha_registro = models.DateTimeField(auto)
+    nro_pedido =
+    monto_total =
+    estado =
