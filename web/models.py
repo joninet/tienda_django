@@ -21,7 +21,7 @@ class Producto(models.Model):
         return self.nombre
     
 class Cliente(models.Model):
-    usuario = models.OneToOneField(User,on_delete=models.RESTRICT)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     dni = models.CharField(max_length=8)
     sexo = models.CharField(max_length=1, default="M")
     telefono = models.CharField(max_length=20)
