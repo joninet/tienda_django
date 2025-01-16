@@ -17,9 +17,9 @@ urlpatterns = [
     path('crearUsuario', views.crearUsuario, name='crearUsuario'),
     path('cuenta', views.cuentaUsuario, name='cuentaUsuario'),
     path('actualizarCliente', views.actualizarCliente, name='actualizarCliente'),
-    path('login', views.loginUsuario, name='loginUsuario')
-
-
+    path('login', views.loginUsuario, name='loginUsuario'),
+    path('logout', views.logoutUsuario, name='logoutUsuario'),
+    path('registrarPedido', views.registrarPedido, name='registrarPedido')
 
 
 ]
